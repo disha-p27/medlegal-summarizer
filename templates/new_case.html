@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Start New Case</h2>
+<p class="muted">Select case type and upload medical documents.</p>
+
+<form method="post" enctype="multipart/form-data">
+  
+  <label>Case Side</label>
+  <select name="case_side" required>
+    <option value="">-- Select --</option>
+    <option value="plaintiff">Plaintiff</option>
+    <option value="defendant">Defendant</option>
+  </select>
+
+  <br><br>
+
+  <label>Summary Format</label>
+  <select name="summary_format" required>
+    <option value="">-- Select --</option>
+    <option value="text">Narrative Text</option>
+    <option value="table">Tabular Summary</option>
+    <option value="both">Text + Table</option>
+  </select>
+
+  <br><br>
+
+  <label>Upload Medical Documents (PDF)</label>
+  <input type="file" name="documents" multiple required />
+
+  <br><br>
+
+  <button type="submit">Upload & Continue</button>
+</form>
+
+{% endblock %}

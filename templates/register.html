@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Create Account</h2>
+<p class="muted">Register to start creating medical‑legal summaries.</p>
+
+<form method="post">
+  <div class="row">
+    <div>
+      <label>Name</label>
+      <input type="text" name="name" required />
+    </div>
+    <div>
+      <label>Email</label>
+      <input type="email" name="email" required />
+    </div>
+  </div>
+
+  <br>
+
+  <label>Password</label>
+  <input type="password" name="password" required />
+
+  <br><br>
+
+  <button type="submit">Create Account</button>
+</form>
+
+<p class="muted" style="margin-top:12px;">
+  Already have an account?
+  <a href="{{ url_for('login') }}">Login here</a>
+</p>
+{% endblock %}

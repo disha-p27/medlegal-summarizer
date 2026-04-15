@@ -1,0 +1,31 @@
+{% extends "base.html" %} {% block content %}
+<h2>Case Details</h2>
+
+<p class="muted">
+  <b>Case Side:</b> {{ case_side }} &nbsp; | &nbsp; <b>Summary Format:</b> {{
+  summary_format }}
+</p>
+
+<hr />
+
+<h3>Uploaded PDFs</h3>
+<ul>
+  {% for f in files %}
+  <li>{{ f }}</li>
+  {% endfor %}
+</ul>
+
+<br />
+
+<form method="post" action="{{ url_for('merge_case', case_id=case_id) }}">
+  <button type="submit">Merge PDFs</button>
+</form>
+
+{% if merged_ready %}
+<br />
+<p class="muted"><b>Merged PDF:</b> ready ✅</p>
+
+<form method="post" action="{{ url_for('summarize_case', case_id=case_id) }}">
+  <button type="submit">Generate Summary</button>
+</form>
+{% endif %} {% endblock %}

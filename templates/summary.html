@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Generated Summary</h2>
+
+<p class="muted">
+  <b>Case Side:</b> {{ case_side }} &nbsp; | &nbsp;
+  <b>Format:</b> {{ summary_format }} &nbsp; | &nbsp;
+  <b>Merged Pages:</b> {{ merged_pages }}
+</p>
+
+<hr>
+
+{% if summary_text %}
+  <h3>Narrative Summary</h3>
+  <div style="white-space: pre-line; line-height: 1.5;">
+    {{ summary_text }}
+  </div>
+
+  <br>
+
+  <a href="{{ url_for('download_docx', case_id=case_id, kind='text') }}">
+    <button type="button">Download Narrative (.docx)</button>
+  </a>
+{% endif %}
+
+{% if summary_table %}
+  <hr>
+  <h3>Tabular Summary</h3>
+  <div style="white-space: pre-line; line-height: 1.5;">
+    {{ summary_table }}
+  </div>
+
+  <br>
+
+  <a href="{{ url_for('download_docx', case_id=case_id, kind='table') }}">
+    <button type="button">Download Table (.docx)</button>
+  </a>
+{% endif %}
+
+<br><br>
+
+<a href="{{ url_for('view_case', case_id=case_id) }}">
+  <button type="button">Back to Case</button>
+</a>
+
+{% endblock %}

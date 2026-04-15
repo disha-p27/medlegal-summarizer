@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MedLegal Summarizer</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background: #f6f7fb; }
+    .topbar { background: #111827; color: white; padding: 14px 20px; display:flex; justify-content:space-between; align-items:center; }
+    .topbar a { color: white; text-decoration: none; margin-left: 12px; }
+    .container { max-width: 900px; margin: 24px auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+    .flash { padding: 10px 12px; border-radius: 8px; margin-bottom: 12px; }
+    .flash.success { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+    .flash.error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+    input, button { padding: 10px; border-radius: 8px; border: 1px solid #d1d5db; width: 100%; }
+    button { background: #2563eb; color: white; border: none; cursor: pointer; }
+    button:hover { background: #1d4ed8; }
+    .row { display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .muted { color:#6b7280; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div><b>MedLegal Summarizer</b></div>
+    <div>
+      {% if current_user.is_authenticated %}
+        <span class="muted" style="color:#cbd5e1;">Hi, {{ current_user.name }}</span>
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+      {% else %}
+        <a href="{{ url_for('login') }}">Login</a>
+        <a href="{{ url_for('register') }}">Register</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </div>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Dashboard</h2>
+<p class="muted">Welcome, {{ name }}.</p>
+
+<br>
+
+<a href="{{ url_for('new_case') }}">
+  <button type="button">Start New Case</button>
+</a>
+{% endblock %}
