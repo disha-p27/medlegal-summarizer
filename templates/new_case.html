@@ -5,32 +5,37 @@
 <p class="muted">Select case type and upload medical documents.</p>
 
 <form method="post" enctype="multipart/form-data">
-  
-  <label>Case Side</label>
-  <select name="case_side" required>
-    <option value="">-- Select --</option>
+
+  <!-- CASE SIDE -->
+  <label for="case_side">Case Side</label>
+  <select name="case_side" id="case_side" required>
+    <option value="" disabled selected>-- Select --</option>
     <option value="plaintiff">Plaintiff</option>
     <option value="defendant">Defendant</option>
   </select>
 
   <br><br>
 
-  <label>Summary Format</label>
-  <select name="summary_format" required>
-    <option value="">-- Select --</option>
-    <option value="text">Narrative Text</option>
-    <option value="table">Tabular Summary</option>
-    <option value="both">Text + Table</option>
+  <!-- SUMMARY FORMAT -->
+  <label for="summary_format">Summary Format</label>
+  <select name="summary_format" id="summary_format" required>
+    <option value="" disabled selected>-- Select --</option>
+    <option value="narrative">Narrative</option>
+    <option value="table">Table</option>
+    <option value="text_table">Text + Table</option>
   </select>
 
   <br><br>
 
-  <label>Upload Medical Documents (PDF)</label>
-  <input type="file" name="documents" multiple required />
+  <!-- FILE UPLOAD -->
+  <label for="documents">Upload Medical Documents (PDF)</label>
+  <input type="file" id="documents" name="documents" multiple accept=".pdf" required />
 
   <br><br>
 
+  <!-- SUBMIT -->
   <button type="submit">Upload & Continue</button>
+
 </form>
 
 {% endblock %}

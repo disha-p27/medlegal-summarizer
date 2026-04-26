@@ -374,38 +374,162 @@ def summarize_case(case_id):
     for chunk in chunks[:2]:
 
         prompt = f"""
-You are a medical record summarization assistant.
+    You are a medical-legal data extraction system.
 
-Extract key information under these headings:
+    Your task is to extract ONLY key factual information from the medical record.
 
-Patient Information
-Chief Complaint
-Mechanism of Injury
-Symptoms
-Diagnoses
-Tests
-Treatment
-Disposition
+    STRICT RULES:
+    - Do NOT paraphrase
+    - Do NOT rewrite sentences
+    - Do NOT add explanations
+    - Do NOT infer beyond the given text
+    - Extract only clear, factual information
 
-Medical Record:
-{chunk}
-"""
+    IMPORTANT:
+    - Extract ALL dates and associate them with events
+    - Focus on injuries, diagnosis, mechanism, and medical findings
 
-        chunk_summaries.append(call_ollama(prompt))
+    Format your output EXACTLY as follows:
+
+    Dates:
+    - (Date - Event)
+
+    Patient Information:
+    - Age:
+    - Gender:
+
+    Incident Details:
+    - Type of Incident:
+    - Location (if available):
+
+    Chief Complaint: 
+    - 
+
+    Mechanism of Injury:
+    - 
+
+    Symptoms:
+    - 
+
+    Clinical Findings:
+    - 
+
+    Diagnoses:
+    - 
+
+    Tests:
+    - 
+
+    Treatment:
+    - 
+
+    Medical Opinion:
+    - 
+
+    Instructions:
+    - Use bullet points only
+    - Keep each point short and factual
+    - If information is missing, leave it blank (do NOT guess)
+
+    Medical Record:
+    {chunk}
+    """
+
+    chunk_summaries.append(call_ollama(prompt))
 
     combined = "\n".join(chunk_summaries)
 
-    final = call_ollama(f"""
-Create a structured final medical summary.
+    case_side = row["case_side"]  # VERY IMPORTANT
 
-Notes:
-{combined}
-""")
+    final_prompt = f"""
+    You are a medical-legal expert assistant.
+
+    Your job is to generate a HIGHLY DETAILED, FACT-BASED, legally useful summary.
+
+    ROLE: {case_side}
+
+    STRICT RULES:
+    - Do NOT use placeholders like [insert...]
+    - Do NOT be vague
+    - Use EXACT medical terminology from the extracted data
+    - Mention specific injuries, diagnoses, tests, and treatments
+    - Include ALL relevant dates and hospital names if available
+    - Every statement must be backed by extracted data
+
+    --------------------------------------
+
+    OUTPUT FORMAT:
+
+    Narrative Summary:
+    Write a detailed, professional medical-legal narrative including:
+    - Date of incident and hospital admission
+    - Hospital/clinic name (if available)
+    - Exact injury description (e.g., "closed displaced fracture of right tibial shaft")
+    - Mechanism of injury (e.g., road traffic accident)
+    - Clinical findings (swelling, deformity, etc.)
+    - Diagnostic tests (X-ray, Doppler, etc.)
+    - Treatment given (immobilization, surgery advised, etc.)
+    - Medical opinion (grievous/simple, trauma type)
+
+    --------------------------------------
+
+    Role-Based Legal Interpretation:
+
+    If ROLE is "plaintiff":
+    - Emphasize severity and seriousness of injuries
+    - Highlight pain, suffering, and long-term impact
+    - Clearly connect injury to incident
+    - Strengthen compensation claim using facts
+
+    If ROLE is "defendant":
+    - Highlight absence of complications
+    - Point out normal findings (no neuro deficit, stable vitals, etc.)
+    - Question severity and long-term impact
+
+    --------------------------------------
+
+    Key Medical Facts (Bullet Points):
+    - Injury:
+    - Diagnosis:
+    - Tests Conducted:
+    - Treatment Given:
+    - Hospital:
+    - Dates:
+    - Clinical Findings:
+
+    --------------------------------------
+
+    Legal Arguments ({case_side.upper()}):
+
+    Generate EXACTLY 5 strong legal arguments based ONLY on the medical data.
+
+    Each argument must:
+    - Be 1 to 2 lines
+    - Be specific (mention injury / test / fact)
+    - Be usable in court
+
+    Example style:
+    1. The X-ray confirms a displaced tibial fracture, establishing clear physical injury.
+    2. The absence of prior medical history strengthens causation from the accident.
+
+    --------------------------------------
+
+    EXTRACTED MEDICAL DATA:
+    {combined}
+    """
+    
+    final = call_ollama(final_prompt)
+
+    # SAVE SUMMARY TO FILE (required for download)
+    summary_file = case_folder / "summary_text.txt"
+    summary_file.write_text(final)
 
     return render_template(
-        "summary.html",
-        case_id=case_id,
-        summary_text=final
+    "summary.html",
+    case_id=case_id,
+    summary_text=final,
+    case_side=row["case_side"],
+    summary_format=row["summary_format"]
     )
 
 

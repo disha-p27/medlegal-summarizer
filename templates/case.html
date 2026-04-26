@@ -1,9 +1,12 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %}
+
+{% block content %}
 <h2>Case Details</h2>
 
 <p class="muted">
-  <b>Case Side:</b> {{ case_side }} &nbsp; | &nbsp; <b>Summary Format:</b> {{
-  summary_format }}
+  <b>Case ID:</b> {{ case_id }} &nbsp; | &nbsp;
+  <b>Case Side:</b> {{ case_side if case_side else 'N/A' }} &nbsp; | &nbsp;
+  <b>Summary Format:</b> {{ summary_format if summary_format else 'N/A' }}
 </p>
 
 <hr />
@@ -11,7 +14,9 @@
 <h3>Uploaded PDFs</h3>
 <ul>
   {% for f in files %}
-  <li>{{ f }}</li>
+    <li>{{ f }}</li>
+  {% else %}
+    <li>No files uploaded</li>
   {% endfor %}
 </ul>
 
@@ -22,10 +27,12 @@
 </form>
 
 {% if merged_ready %}
-<br />
-<p class="muted"><b>Merged PDF:</b> ready ✅</p>
+  <br />
+  <p class="muted"><b>Merged PDF:</b> ready ✅</p>
 
-<form method="post" action="{{ url_for('summarize_case', case_id=case_id) }}">
-  <button type="submit">Generate Summary</button>
-</form>
-{% endif %} {% endblock %}
+  <form method="post" action="{{ url_for('summarize_case', case_id=case_id) }}">
+    <button type="submit">Generate Summary</button>
+  </form>
+{% endif %}
+
+{% endblock %}
